@@ -1,6 +1,6 @@
 class CountdownTimer extends HTMLElement {
   connectedCallback() {
-    const targetDate = new Date("June 30, 2026 20:00:00 PST").getTime();
+    const targetDate = new Date("June 30, 2026 20:00:00 GMT+8").getTime();
 
     // Container
     const container = document.createElement("div");
