@@ -29,7 +29,7 @@ class CountdownTimer extends HTMLElement {
         }
       </style>
 
-      <div class="countdown" id="timer">Loading…</div>
+      <div class="countdown" id="timer">Loading...</div>
     `;
 
     const timerElement = this.querySelector("#timer");
@@ -38,4 +38,28 @@ class CountdownTimer extends HTMLElement {
       const now = new Date().getTime();
       const distance = targetDate - now;
 
-      if (distance
+            if (distance < 0) {
+        timerElement.innerHTML = "We Are Live.";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      timerElement.innerHTML = `
+        <span class="unit">${days}<span class="label">DAYS</span></span>
+        <span class="unit">${hours}<span class="label">HRS</span></span>
+        <span class="unit">${minutes}<span class="label">MIN</span></span>
+        <span class="unit">${seconds}<span class="label">SEC</span></span>
+      `;
+    };
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+  }
+}
+
+customElements.define("countdown-timer", CountdownTimer);
+
