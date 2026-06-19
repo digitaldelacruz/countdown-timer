@@ -2,44 +2,29 @@ class CountdownTimer extends HTMLElement {
   connectedCallback() {
     const targetDate = new Date("June 30, 2026 20:00:00 PST").getTime();
 
-    this.innerHTML = `
-      <style>
-        .countdown {
-          font-family: sans-serif;
-          color: #ffffff;
-          text-align: center;
-          font-size: 32px;
-          letter-spacing: 1px;
-          background: transparent;
-        }
-        .label {
-          font-size: 12px;
-          opacity: 0.7;
-          display: block;
-          margin-top: 4px;
-        }
-        .unit {
-          display: inline-block;
-          margin: 0 12px;
-          background: transparent;
-        }
-        :host {
-          display: block;
-          background: transparent !important;
-        }
-      </style>
+    // Container
+    const container = document.createElement("div");
+    container.style.fontFamily = "sans-serif";
+    container.style.color = "#ffffff";
+    container.style.textAlign = "center";
+    container.style.fontSize = "32px";
+    container.style.letterSpacing = "1px";
+    container.style.background = "transparent";
 
-      <div class="countdown" id="timer">Loading...</div>
-    `;
+    // Timer element
+    const timerElement = document.createElement("div");
+    timerElement.id = "timer";
+    timerElement.textContent = "Loading...";
+    container.appendChild(timerElement);
 
-    const timerElement = this.querySelector("#timer");
+    this.appendChild(container);
 
     const updateTimer = () => {
       const now = new Date().getTime();
       const distance = targetDate - now;
 
             if (distance < 0) {
-        timerElement.innerHTML = "We Are Live.";
+        timerElement.textContent = "We Are Live.";
         return;
       }
 
@@ -48,12 +33,36 @@ class CountdownTimer extends HTMLElement {
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-      timerElement.innerHTML = `
-        <span class="unit">${days}<span class="label">DAYS</span></span>
-        <span class="unit">${hours}<span class="label">HRS</span></span>
-        <span class="unit">${minutes}<span class="label">MIN</span></span>
-        <span class="unit">${seconds}<span class="label">SEC</span></span>
-      `;
+      // Clear previous content
+      timerElement.innerHTML = "";
+
+      // Helper to build each unit
+      const makeUnit = (value, label) => {
+        const unit = document.createElement("span");
+        unit.style.display = "inline-block";
+        unit.style.margin = "0 12px";
+        unit.style.background = "transparent";
+
+        const valueNode = document.createElement("span");
+        valueNode.textContent = value;
+
+        const labelNode = document.createElement("span");
+        labelNode.textContent = label;
+        labelNode.style.display = "block";
+        labelNode.style.fontSize = "12px";
+        labelNode.style.opacity = "0.7";
+        labelNode.style.marginTop = "4px";
+
+        unit.appendChild(valueNode);
+        unit.appendChild(labelNode);
+
+        return unit;
+      };
+
+      timerElement.appendChild(makeUnit(days, "DAYS"));
+      timerElement.appendChild(makeUnit(hours, "HRS"));
+      timerElement.appendChild(makeUnit(minutes, "MIN"));
+      timerElement.appendChild(makeUnit(seconds, "SEC"));
     };
 
     updateTimer();
@@ -62,4 +71,3 @@ class CountdownTimer extends HTMLElement {
 }
 
 customElements.define("countdown-timer", CountdownTimer);
-
